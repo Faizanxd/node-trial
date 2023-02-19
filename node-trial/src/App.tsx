@@ -5,8 +5,11 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
-import { MantineProvider } from "@mantine/core";
+import Browse from "./pages/browse";
 import Layout from "./components/layout";
+import LandingPage from "./pages/landing";
+import ShareForm from "./pages/shareform";
+import About from "./pages/about";
 
 function RouteError() {
   return (
@@ -28,7 +31,16 @@ function AppRouter() {
       <>
         <Route path="*" element={<RouteError />} />
         <Route path="/" element={<Layout />}>
-          <Route index element={<h1>hello</h1>} />
+          <Route index element={<LandingPage />} />
+        </Route>
+        <Route path="/browse" element={<Layout />}>
+          <Route index element={<Browse />} />
+        </Route>
+        <Route path="/share" element={<Layout />}>
+          <Route index element={<ShareForm />} />
+        </Route>
+        <Route path="/about" element={<Layout />}>
+          <Route index element={<About />} />
         </Route>
       </>
     )
@@ -38,8 +50,8 @@ function AppRouter() {
 
 export default function App() {
   return (
-    <MantineProvider>
-      <AppRouter />
-    </MantineProvider>
+    <div className=" font-Roboto">
+      <AppRouter />;
+    </div>
   );
 }
