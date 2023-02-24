@@ -11,9 +11,9 @@ app.use(express.static("public"));
 
 app.use(blogRoutes);
 
-app.use((error, next, req, res) => {
+app.use(function (error, next, req, res) {
   console.log(error);
-  res.status(500).render("500");
+  res.status(500).send("500");
 });
 
 app.listen(3000);
