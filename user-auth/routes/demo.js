@@ -64,22 +64,35 @@ router.post("/login", async function (req, res) {
     .findOne({ email: enteredEmail });
 
   if (!user) {
-    return res.redirect("/signup");
+    return res.redirect("/login");
   }
 
   const passwordMatch = await bcrypt.compare(enteredPassword, user.password);
 
   if (!passwordMatch) {
-    return res.redirect("/signup");
+    return res.redirect("/login");
   }
 
-  res.redirect("/admin");
+  req.session.user = {
+    id: user._id,
+    email: user.email,
+  };
+
+  req.session.save(() => {
+    res.redirect("/admin");
+  });
 });
 
 router.get("/admin", function (req, res) {
+  if (!req.session.user) {
+    return res.status(401).render("401");
+  }
   res.render("admin");
 });
 
-router.post("/logout", function (req, res) {});
+router.post("/logout", function (req, res) {
+  req.session.user = null;
+  res.redirect("/");
+});
 
 module.exports = router;

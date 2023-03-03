@@ -1,11 +1,17 @@
 const path = require("path");
-
+const session = require("express-session");
 const express = require("express");
-
+const mongodbStore = require("connect-mongodb-session");
 const db = require("./data/database");
 const demoRoutes = require("./routes/demo");
-
+const MongoDBStore = mongodbStore(session);
 const app = express();
+
+const sessionStore = new MongoDBStore({
+  uri: "mongodb://127.0.0.1:27017",
+  databaseName: "auth-demo",
+  collection: "sessions",
+});
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -13,6 +19,17 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
 
+app.use(
+  session({
+    secret: "my secret",
+    resave: false,
+    saveUninitialized: false,
+    store: sessionStore,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    },
+  })
+);
 app.use(demoRoutes);
 
 app.use(function (error, req, res, next) {
